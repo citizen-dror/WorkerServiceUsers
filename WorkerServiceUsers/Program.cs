@@ -19,7 +19,7 @@ namespace WorkerServiceUsers
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
-                // .UseWindowsService()
+                .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                 {
                     var optionsBuilder = new DbContextOptionsBuilder<supercomDbContext>();
