@@ -4,7 +4,7 @@ using System.Linq;
 using System.Data;
 using WorkerServiceUsers.DAL;
 
-namespace WorkerServiceUsers.Services
+namespace WorkerServiceUsers.BL
 {
     public class UserService
     {
@@ -80,7 +80,7 @@ namespace WorkerServiceUsers.Services
             // set default values for the user
             user.CreateDate = DateTime.Now;
             user.LastUpdate = DateTime.Now;
-            user.LastTask = DateTime.Now;
+            user.NextTask = DateTime.Now;
             user.TaskInterval = 10; //default value is 10 minutes
             try
             {

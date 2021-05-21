@@ -18,6 +18,6 @@ namespace WorkerServiceUsers.DAL
         public DateTime CreateDate { get; set; }
         public DateTime LastUpdate { get; set; }
         public int TaskInterval { get; set; }
-        public DateTime LastTask { get; set; }
+        public DateTime NextTask { get; set; }
     }
 }

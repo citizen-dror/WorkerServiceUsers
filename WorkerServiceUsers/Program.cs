@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WorkerServiceUsers.DAL;
+using WorkerServiceUsers.BL;
+using Microsoft.Extensions.Logging;
 
 namespace WorkerServiceUsers
 {
@@ -25,7 +27,13 @@ namespace WorkerServiceUsers
                     var optionsBuilder = new DbContextOptionsBuilder<supercomDbContext>();
                     optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=supercom;Trusted_Connection=True;");//,
                     services.AddScoped<supercomDbContext>(s => new supercomDbContext(optionsBuilder.Options));
-
+                    //add singlton UserManager
+                    services.AddSingleton<IUserManager, UserManager>();
+                    //services.AddSingleton<IUserManager, UserManager>(serviceProvider =>
+                    //{
+                    //    var logger = serviceProvider.GetRequiredService<ILogger<UserManager>>();
+                    //    return new UserManager(logger);
+                    //});
                     services.AddHostedService<Worker>();
                 });
 

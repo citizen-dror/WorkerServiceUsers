@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WorkerServiceUsers.DAL;
+using WorkerServiceUsers.BL;
 
 namespace WorkerServiceUsers
 {
@@ -14,13 +15,21 @@ namespace WorkerServiceUsers
     {
         private readonly ILogger<Worker> _logger;
 
-        private readonly IServiceProvider _provider;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public Worker(ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
+        private readonly IUserManager _userManager;
+
+        public Worker(ILogger<Worker> logger, 
+            IServiceScopeFactory serviceScopeFactory,
+            IUserManager userManager
+            )
         {
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
+            _userManager = userManager;
+            _logger.LogInformation("start worker");
+            //init list ot timers
+            _logger.LogInformation("count user managed: {count}", _userManager.ManageUsers());
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -29,13 +38,8 @@ namespace WorkerServiceUsers
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 using var scope = _serviceScopeFactory.CreateScope();
-
-                var dbContext = scope.ServiceProvider.GetRequiredService<supercomDbContext>();
-                long id = 1;
-                var name = dbContext.Users.Find(id).FirstName;
-                _logger.LogInformation("first name: {name}", name);
-
-                await Task.Delay(2000, stoppingToken);
+  
+                await Task.Delay(10_000, stoppingToken);
             }
         }
     }
