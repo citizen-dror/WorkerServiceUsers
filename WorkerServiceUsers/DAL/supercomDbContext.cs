@@ -92,9 +92,9 @@ namespace WorkerServiceUsers.DAL
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.Property(e => e.NextTask).HasColumnType("datetime");
-
                 entity.Property(e => e.LastUpdate).HasColumnType("datetime");
+
+                entity.Property(e => e.NextTask).HasColumnType("datetime");
 
                 entity.Property(e => e.PhoneSkype)
                     .HasMaxLength(200)

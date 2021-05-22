@@ -17,6 +17,7 @@ namespace WorkerServiceUsers.DAL
         public byte[] Avatar { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime LastUpdate { get; set; }
+        public bool? SendTasks { get; set; }
         public int TaskInterval { get; set; }
         public DateTime NextTask { get; set; }
     }

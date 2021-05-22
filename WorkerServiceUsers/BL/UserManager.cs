@@ -14,15 +14,12 @@ namespace WorkerServiceUsers.BL
     public interface IUserManager
     {
         int ManageUsers();
-        string getName();
     }
 
     // a singlotn to manage users
     public class UserManager : IUserManager
     {
-        private List<CustomTimer> TimersList;
-        public string Name;
-
+        private List<CustomTimer> _timersList;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<UserManager> _logger;
 
@@ -32,35 +29,30 @@ namespace WorkerServiceUsers.BL
         {
             this._scopeFactory = scopeFactory;
             this._logger = logger;
-            Name = "kdalaomer";
-            _logger.LogInformation("init UserManager");
+             _logger.LogInformation("init UserManager");
         }
 
         public int ManageUsers()
         {
             _logger.LogInformation("ManageUsers");
             int res;
-            TimersList = new List<CustomTimer> { };
+            _timersList = new List<CustomTimer> { };
             using (var scope = _scopeFactory.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<supercomDbContext>();
-                var UserList = db.Users.Where(p => p.NextTask < DateTime.Now).ToList();
+                var UserList = db.Users.Where(p => p.SendTasks == true).ToList();
                 foreach (User user in UserList)
                 {
                     CustomTimer timer = StartTimer(user);
-                    TimersList.Add(timer);
+                    _timersList.Add(timer);
                 }
                 //db.Users.UpdateRange(UserList);
                 //db.SaveChanges();
                 res = UserList.Count;
             }
-
             return res;
         }
-        public string getName()
-        {
-            return Name;
-        }
+
 
         private CustomTimer StartTimer(User user)
         {
@@ -80,7 +72,7 @@ namespace WorkerServiceUsers.BL
         private void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             string name = ((CustomTimer)sender).name;
-            _logger.LogInformation($"event for user {name} at {e.SignalTime}");
+            _logger.LogInformation($"event for user: {name}, at {e.SignalTime}");
         }
     }
 
