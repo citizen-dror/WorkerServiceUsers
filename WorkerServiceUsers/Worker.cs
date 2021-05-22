@@ -28,12 +28,15 @@ namespace WorkerServiceUsers
             _serviceScopeFactory = serviceScopeFactory;
             _userManager = userManager;
             _logger.LogInformation("start worker");
-            //init list ot timers
-            _logger.LogInformation("count user managed: {count}", _userManager.ManageUsers());
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            //init list ot timers for active users - we call this only once 
+            // option-  move this inside the worker, after setting update code for the list of timers (by user SendTasks)
+            int count = _userManager.ManageUsers();
+            _logger.LogInformation($"timers where set for {count} users");
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);

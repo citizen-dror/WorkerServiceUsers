@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WorkerServiceUsers.DAL;
 using WorkerServiceUsers.BL;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace WorkerServiceUsers
 {
@@ -24,28 +25,20 @@ namespace WorkerServiceUsers
                 .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                 {
+                    //get connection string from appsetting 
+                    IConfiguration configuration = hostContext.Configuration;
+                    string connectionsString = configuration.GetSection("ConnectionStrings").GetSection("supercomDb").Value;
+                    //inject DbContext
                     var optionsBuilder = new DbContextOptionsBuilder<supercomDbContext>();
-                    optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=supercom;Trusted_Connection=True;");//,
+                    optionsBuilder.UseSqlServer(connectionsString);
                     services.AddScoped<supercomDbContext>(s => new supercomDbContext(optionsBuilder.Options));
-                    //add singlton UserManager
+                    //inject singlton UserManager
                     services.AddSingleton<IUserManager, UserManager>();
-                    //services.AddSingleton<IUserManager, UserManager>(serviceProvider =>
-                    //{
-                    //    var logger = serviceProvider.GetRequiredService<ILogger<UserManager>>();
-                    //    return new UserManager(logger);
-                    //});
+                    //inject the main Worker   
                     services.AddHostedService<Worker>();
                 });
 
             return host;
         }
-        //public static IHostBuilder CreateHostBuilder(string[] args) =>
-        //    Host.CreateDefaultBuilder(args)
-        //        .ConfigureServices((hostContext, services) =>
-        //        {
-        //            var configuration = hostContext.Configuration;
-        //            services.AddHostedService<Worker>();
-        //            services.AddScoped<supercomDbContext>(s => new supercomDbContext(configuration));
-        //        });
     }
 }

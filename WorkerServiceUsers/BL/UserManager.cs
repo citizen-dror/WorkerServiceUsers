@@ -32,6 +32,11 @@ namespace WorkerServiceUsers.BL
              _logger.LogInformation("init UserManager");
         }
 
+        /// <summary>
+        /// manage a list of timeres for all users with "SendTasks = true" 
+        /// eache timer should send do some task (like sending mail to the user)
+        /// </summary>
+        /// <returns>number of active </returns>
         public int ManageUsers()
         {
             _logger.LogInformation("ManageUsers");
@@ -53,10 +58,15 @@ namespace WorkerServiceUsers.BL
             return res;
         }
 
-
+        /// <summary>
+        /// start a timer for each user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private CustomTimer StartTimer(User user)
         {
             string name = user.FirstName + " " + user.LastName;
+            //note - for demo reasons - the timers interval is in seconds - not it minutes!
             var timer = new CustomTimer
             {
                 id = user.UserId,
@@ -72,7 +82,7 @@ namespace WorkerServiceUsers.BL
         private void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             string name = ((CustomTimer)sender).name;
-            _logger.LogInformation($"event for user: {name}, at {e.SignalTime}");
+            _logger.LogInformation($"(mock) send email for user: {name}, at {e.SignalTime}");
         }
     }
 
